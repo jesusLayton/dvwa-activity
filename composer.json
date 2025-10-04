@@ -1,9 +1,0 @@
-{
-    "name": "jesuslayton/dvwa-activity",
-    "description": "DVWA Security Analysis Project",
-    "type": "project",
-    "require": {
-        "php": ">=5.6"
-    },
-    "require-dev": {}
-}
