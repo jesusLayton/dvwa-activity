@@ -22,19 +22,15 @@ jobs:
       - name: Verificar archivos del directorio
         run: ls -la
       
-      # Usar Snyk Code para analizar el código fuente (no dependencias)
-      - name: Run Snyk Code to check for vulnerabilities
+     # La acción oficial automáticamente sincroniza con el dashboard
+      - name: Run Snyk Security Scan
+        uses: snyk/actions@master
+        continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        run: snyk code test --severity-threshold=high
-        continue-on-error: true
-      
-      # Monitor project in Snyk Dashboard
-      - name: Monitor project in Snyk Dashboard
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        run: snyk monitor
-        continue-on-error: true
+        with:
+          command: code test
+          args: --sarif-file-output=snyk-code.sarif
       
       # Opcional: Analizar contenedores Docker si los usas
       - name: Run Snyk to check Docker
