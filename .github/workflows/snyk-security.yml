@@ -16,7 +16,9 @@ jobs:
           node-version: '18'
       - name: Install Snyk
         run: npm install -g snyk
+      - name: Verificar arch direc
+        run: ls
       - name: Run Snyk to check for vulnerabilities
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        run: snyk test
+        run: snyk test
