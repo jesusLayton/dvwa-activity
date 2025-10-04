@@ -15,8 +15,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       
-      # La acción oficial automáticamente sincroniza con el dashboard
-      - name: Run Snyk Security Scan
+      # Análisis de código
+      - name: Run Snyk Code Test
         uses: snyk/actions@master
         continue-on-error: true
         env:
@@ -25,6 +25,17 @@ jobs:
           command: code test
           args: --sarif-file-output=snyk-code.sarif
       
+      # Monitor de dependencias (ahora funcionará con composer.json)
+      - name: Monitor dependencies in Snyk
+        uses: snyk/actions/php@master
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          command: monitor
+          args: --project-name=dvwa-activity
+      
+      # Subir a GitHub Security
       - name: Upload to GitHub Security
         uses: github/codeql-action/upload-sarif@v2
         if: always()
