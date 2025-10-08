@@ -1,5 +1,4 @@
 <?php
-
 define( 'DVWA_WEB_PAGE_TO_ROOT', '../' );
 require_once DVWA_WEB_PAGE_TO_ROOT . 'dvwa/includes/dvwaPage.inc.php';
 
@@ -11,8 +10,7 @@ $page[ 'title' ] .= 'Source' . $page[ 'title_separator' ].$page[ 'title' ];
 if (array_key_exists ("id", $_GET) && array_key_exists ("security", $_GET)) {
 	$id       = $_GET[ 'id' ];
 	$security = $_GET[ 'security' ];
-
-
+	
 	switch ($id) {
 		case "fi" :
 			$vuln = 'File Inclusion';
@@ -56,15 +54,20 @@ if (array_key_exists ("id", $_GET) && array_key_exists ("security", $_GET)) {
 		default:
 			$vuln = "Unknown Vulnerability";
 	}
-
+	
+	// Escapar las variables que se usan en rutas de archivos
+	$id_safe = htmlspecialchars($id, ENT_QUOTES, 'UTF-8');
+	$security_safe = htmlspecialchars($security, ENT_QUOTES, 'UTF-8');
+	$vuln_safe = htmlspecialchars($vuln, ENT_QUOTES, 'UTF-8');
+	
 	$source = @file_get_contents( DVWA_WEB_PAGE_TO_ROOT . "vulnerabilities/{$id}/source/{$security}.php" );
 	$source = str_replace( array( '$html .=' ), array( 'echo' ), $source );
-
+	
 	$js_html = "";
 	if (file_exists (DVWA_WEB_PAGE_TO_ROOT . "vulnerabilities/{$id}/source/{$security}.js")) {
 		$js_source = @file_get_contents( DVWA_WEB_PAGE_TO_ROOT . "vulnerabilities/{$id}/source/{$security}.js" );
 		$js_html = "
-		<h2>vulnerabilities/{$id}/source/{$security}.js</h2>
+		<h2>vulnerabilities/" . $id_safe . "/source/" . $security_safe . ".js</h2>
 		<div id=\"code\">
 			<table width='100%' bgcolor='white' style=\"border:2px #C0C0C0 solid\">
 				<tr>
@@ -74,12 +77,11 @@ if (array_key_exists ("id", $_GET) && array_key_exists ("security", $_GET)) {
 		</div>
 		";
 	}
-
+	
 	$page[ 'body' ] .= "
 	<div class=\"body_padded\">
-		<h1>{$vuln} Source</h1>
-
-		<h2>vulnerabilities/{$id}/source/{$security}.php</h2>
+		<h1>" . $vuln_safe . " Source</h1>
+		<h2>vulnerabilities/" . $id_safe . "/source/" . $security_safe . ".php</h2>
 		<div id=\"code\">
 			<table width='100%' bgcolor='white' style=\"border:2px #C0C0C0 solid\">
 				<tr>
@@ -89,9 +91,8 @@ if (array_key_exists ("id", $_GET) && array_key_exists ("security", $_GET)) {
 		</div>
 		{$js_html}
 		<br /> <br />
-
 		<form>
-			<input type=\"button\" value=\"Compare All Levels\" onclick=\"window.location.href='view_source_all.php?id=$id'\">
+			<input type=\"button\" value=\"Compare All Levels\" onclick=\"window.location.href='view_source_all.php?id=" . urlencode($id) . "'\">
 		</form>
 	</div>\n";
 } else {
@@ -99,5 +100,4 @@ if (array_key_exists ("id", $_GET) && array_key_exists ("security", $_GET)) {
 }
 
 dvwaSourceHtmlEcho( $page );
-
 ?>
