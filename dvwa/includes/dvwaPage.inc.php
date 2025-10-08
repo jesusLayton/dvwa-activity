@@ -271,7 +271,7 @@ function dvwaMessagePop() {
 function messagesPopAllToHtml() {
 	$messagesHtml = '';
 	while( $message = dvwaMessagePop() ) {   // TODO- sharpen!
-		$messagesHtml .= "<div class=\"message\">{$message}</div>";
+		$messagesHtml .= "<div class=\"message\">" . htmlspecialchars($message, ENT_QUOTES, 'UTF-8') . "</div>";
 	}
 
 	return $messagesHtml;
