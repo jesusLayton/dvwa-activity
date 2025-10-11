@@ -99,5 +99,7 @@ if (array_key_exists ("id", $_GET) && array_key_exists ("security", $_GET)) {
 	$page['body'] = "<p>Not found</p>";
 }
 
+
+
 dvwaSourceHtmlEcho( $page );
 ?>
